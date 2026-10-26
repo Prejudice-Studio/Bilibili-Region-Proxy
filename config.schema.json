@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Bilibili Region Proxy 配置",
+  "description": "代理配置及番剧搜索注入条目的字段定义。",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "JSON 编辑器使用的 Schema 地址。"
+    },
+    "force_intl_bangumi_search": {
+      "type": "boolean",
+      "default": false,
+      "description": "启用后，匹配的 media_bangumi 搜索强制使用 /zh-Hans/bangumi。"
+    },
+    "injection": {
+      "type": "object",
+      "description": "搜索结果注入设置。",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "是否启用搜索结果注入。"
+        },
+        "position": {
+          "type": "string",
+          "enum": ["head", "tail"],
+          "default": "tail",
+          "description": "注入结果放在真实结果之前（head）或之后（tail）。"
+        },
+        "items": {
+          "type": "array",
+          "maxItems": 100,
+          "description": "注入条目，最多处理 100 条。",
+          "items": { "$ref": "#/$defs/injectionItem" }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "stringOrNumber": {
+      "type": ["string", "number"]
+    },
+    "integerOrString": {
+      "type": ["integer", "string"]
+    },
+    "stringList": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rawList": {
+      "type": "array",
+      "description": "数组元素会原样复制到响应，不会验证内部结构。",
+      "items": {}
+    },
+    "injectionItem": {
+      "type": "object",
+      "required": ["title"],
+      "anyOf": [
+        { "required": ["link"] },
+        { "required": ["url"] },
+        { "required": ["goto_url"] },
+        { "required": ["uri"] }
+      ],
+      "properties": {
+        "title": { "type": "string", "description": "必填展示标题。最多 200 个 Unicode 字符。" },
+        "org_title": { "type": "string", "description": "原名；优先于 original_title。" },
+        "original_title": { "type": "string", "description": "org_title 的兼容别名。" },
+        "type": { "type": "string", "description": "结果类型；常用 media_bangumi 或 media_ft。" },
+        "image": { "type": "string", "format": "uri-reference", "description": "封面地址，优先于 image_url 和 cover。" },
+        "image_url": { "type": "string", "format": "uri-reference", "description": "封面地址别名。" },
+        "cover": { "type": "string", "format": "uri-reference", "description": "封面地址别名。" },
+        "media_type": { "$ref": "#/$defs/integerOrString", "description": "媒体类型编号，默认 1；0 按 1 处理。" },
+        "areas": { "type": "string", "description": "地区文本，areas/area 可互相补足。" },
+        "area": { "type": "string", "description": "地区文本兼容字段。" },
+        "styles": { "type": "string", "description": "风格文本，styles/style 可互相补足。" },
+        "style": { "type": "string", "description": "风格文本兼容字段。" },
+        "cv": { "type": "string", "description": "配音信息。" },
+        "staff": { "type": "string", "description": "制作人员信息。" },
+        "play_state": { "$ref": "#/$defs/integerOrString", "description": "播放状态编号。" },
+        "link": { "type": "string", "format": "uri-reference", "description": "跳转链接；link、url、goto_url、uri 至少提供一个。" },
+        "url": { "type": "string", "format": "uri-reference", "description": "跳转链接别名。" },
+        "goto_url": { "type": "string", "format": "uri-reference", "description": "跳转链接别名。" },
+        "uri": { "type": "string", "format": "uri-reference", "description": "跳转链接别名。" },
+        "param": { "type": "string", "description": "客户端跳转参数。" },
+        "goto": { "type": "string", "description": "跳转目标提示。" },
+        "linktype": { "type": "string", "description": "链接类型提示。" },
+        "trackid": { "type": "string", "description": "跟踪标识。" },
+        "desc": { "type": "string", "description": "简介；与 description、prompt 互为回退值。" },
+        "description": { "type": "string", "description": "简介别名。" },
+        "prompt": { "type": "string", "description": "简介别名。" },
+        "pubtime": { "$ref": "#/$defs/integerOrString", "description": "发布时间 Unix 时间戳（秒）。" },
+        "fix_pubtime_str": { "type": "string", "description": "自定义播出时间文案。" },
+        "media_score": {
+          "type": ["object", "null"],
+          "description": "评分对象。评分为数字，人数为整数；也兼容条目中的字面键 media_score.score 和 media_score.user_count。",
+          "properties": {
+            "score": { "$ref": "#/$defs/stringOrNumber", "description": "评分，例如 9.2。" },
+            "user_count": { "$ref": "#/$defs/integerOrString", "description": "评分人数。" }
+          },
+          "additionalProperties": true
+        },
+        "media_score.score": { "$ref": "#/$defs/stringOrNumber", "description": "media_score.score 的旧格式字段。" },
+        "media_score.user_count": { "$ref": "#/$defs/integerOrString", "description": "media_score.user_count 的旧格式字段。" },
+        "rating": { "$ref": "#/$defs/stringOrNumber", "description": "media_score.score 的回退值。" },
+        "rating_count": { "$ref": "#/$defs/integerOrString", "description": "评分人数回退值，优先于 vote。" },
+        "vote": { "$ref": "#/$defs/integerOrString", "description": "旧版评分人数回退值。" },
+        "season_type": { "$ref": "#/$defs/integerOrString", "description": "类别编号：1 番剧、2 电影、3 纪录片、4 国创、5 电视剧、7 综艺。" },
+        "season_type_name": { "type": "string", "description": "类别名称；未填写时按 season_type 推断。" },
+        "season_id": { "$ref": "#/$defs/integerOrString", "description": "季 ID；优先于 pgc_season_id。为 0 时不输出季 ID。" },
+        "pgc_season_id": { "$ref": "#/$defs/integerOrString", "description": "season_id 的兼容别名。" },
+        "media_id": { "$ref": "#/$defs/integerOrString", "description": "媒体 ID；为 0 时不输出。" },
+        "media_mode": { "$ref": "#/$defs/integerOrString", "description": "媒体模式编号。" },
+        "is_avid": { "type": ["boolean", "integer", "string"], "description": "是否按 avid 类型解释，按真值转换为 boolean。" },
+        "corner": { "$ref": "#/$defs/integerOrString", "description": "角标编号。" },
+        "hit_columns": { "$ref": "#/$defs/rawList" },
+        "all_net": {
+          "type": ["object", "null"],
+          "description": "外部平台对象，可提供 name、icon、url。",
+          "properties": {
+            "name": { "type": "string" },
+            "icon": { "type": "string" },
+            "url": { "type": "string" }
+          },
+          "additionalProperties": true
+        },
+        "all_net_name": { "type": "string", "description": "外部平台名称；未填写时取 all_net.name。" },
+        "all_net_icon": { "type": "string", "description": "外部平台图标；未填写时取 all_net.icon。" },
+        "all_net_url": { "type": "string", "description": "外部平台地址；未填写时取 all_net.url。" },
+        "angle_title": { "type": "string", "description": "角标文案。" },
+        "angle_color": { "$ref": "#/$defs/integerOrString", "description": "角标颜色数值。" },
+        "display_info": { "$ref": "#/$defs/rawList" },
+        "hit_epids": { "type": "string", "description": "命中剧集 ID 文本。" },
+        "selection_style": { "type": "string", "description": "选集展示样式。" },
+        "ep_size": { "$ref": "#/$defs/integerOrString", "description": "剧集数量；未填写时取最终剧集数组长度。" },
+        "eps": { "$ref": "#/$defs/episodes" },
+        "episodes": { "$ref": "#/$defs/episodes", "description": "eps 为空时采用的剧集兼容字段。" },
+        "episodes_new": { "$ref": "#/$defs/episodes" },
+        "badges": { "$ref": "#/$defs/rawList" },
+        "badges_v2": { "$ref": "#/$defs/rawList" },
+        "label": { "type": "string", "description": "标签文本。" },
+        "is_out": { "$ref": "#/$defs/integerOrString", "description": "站外内容状态值。" },
+        "styles_v2": { "type": "string", "description": "新版风格文本。" },
+        "style_label": { "type": ["object", "null"], "description": "风格标签对象，内容原样保留。", "additionalProperties": true },
+        "target": { "type": "string", "description": "跳转目标信息。" },
+        "out_name": { "type": "string", "description": "站外来源名称；可回退到 all_net_name。" },
+        "out_icon": { "type": "string", "description": "站外来源图标；可回退到 all_net_icon。" },
+        "out_url": { "type": "string", "description": "站外来源链接；可回退到 all_net_url。" },
+        "button_text": { "type": "string", "description": "按钮文案。" },
+        "watch_button": { "type": ["object", "null"], "description": "观看按钮结构，内容原样保留。", "additionalProperties": true },
+        "check_more": { "type": ["object", "null"], "description": "查看更多按钮结构，内容原样保留。", "additionalProperties": true },
+        "follow_button": { "type": ["object", "null"], "description": "追番按钮结构，内容原样保留。", "additionalProperties": true },
+        "is_atten": { "$ref": "#/$defs/integerOrString", "description": "关注状态；未填写时回退到 is_follow。" },
+        "is_follow": { "$ref": "#/$defs/integerOrString", "description": "关注状态值。" },
+        "is_selection": { "$ref": "#/$defs/integerOrString", "description": "选集入口状态值。" }
+      },
+      "additionalProperties": true
+    },
+    "episodes": {
+      "type": "array",
+      "maxItems": 30,
+      "description": "最多 30 项，数组元素会原样保留；通常使用包含 id、title、long_title 的剧集对象。",
+      "items": {}
+    }
+  }
+}

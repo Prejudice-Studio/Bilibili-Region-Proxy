@@ -73,7 +73,7 @@ GET /x/web-interface/wbi/search/type?search_type=media_bangumi&keyword=我的英
 
 `injection` 配置兼容现有格式，可选择把条目追加到搜索结果头部或尾部。注入条目不计入上游 `numResults`。
 
-完整配置模板见 [`config.example.json`](config.example.json)。
+完整可复制模板见 [`config.example.json`](config.example.json)。所有注入字段的用途、JSON 类型、默认值、别名优先级和长度限制见 [`CONFIGURATION.md`](CONFIGURATION.md)；[`config.schema.json`](config.schema.json) 为编辑器提供字段类型和补全说明。
 
 ## 请求与凭据
 

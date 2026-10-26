@@ -20,5 +20,6 @@
 - Run `gofmt` on changed Go files.
 - Run `go test ./...`, `go vet ./...`, and `go build ./...`.
 - Update the Chinese README when command-line behavior, routes, configuration, or response behavior changes.
+- When changing injectable configuration fields, keep `config.example.json`, `CONFIGURATION.md`, and `config.schema.json` aligned with the parser.
 - Add or update focused tests when changing request routing, parsing, configuration, or result injection.
 - Use a descriptive Conventional Commit message, such as `fix(proxy): preserve intl search parameters`.

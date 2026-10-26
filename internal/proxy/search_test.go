@@ -16,8 +16,8 @@ func TestIntlSearchQueryForwardsClientParameters(t *testing.T) {
 		"resolver_mode":   {"INTL"},
 		"resolver_cursor": {"local-cursor"},
 	}
-	got := intlSearchQuery(input, "我的英雄学院", 2)
-	if got.Get("keyword") != "我的英雄学院" || got.Get("category") != "bangumi" || got.Get("page") != "2" {
+	got := intlSearchQuery(input, "葬送的芙莉莲", 2)
+	if got.Get("keyword") != "葬送的芙莉莲" || got.Get("category") != "bangumi" || got.Get("page") != "2" {
 		t.Fatalf("search parameters were not overridden correctly: %v", got)
 	}
 	if got.Get("search_type") != "media_bangumi" || got.Get("page_size") != "30" || got.Get("access_key") != "account-token" {
@@ -71,7 +71,7 @@ func TestPreserveSearchQueryOnRedirect(t *testing.T) {
 }
 
 func TestIntlBangumiResponseReadsObjectResult(t *testing.T) {
-	document := []byte(`window.__pinia={"searchResponse":{"ipRegion":"SG","searchAllResponse":{"pageinfo":{"media_bangumi":{"numResults":1,"pages":1}},"result":[]}},"searchTypeResponse":{"searchTypeResponse":{"numResults":1,"numPages":1,"result":{"media_bangumi":{"data":[{"title":"我的英雄学院：两位英雄","season_id":274813,"cover":"//i0.hdslb.com/test.jpg"}]}}}}};</script>`)
+	document := []byte(`window.__pinia={"searchResponse":{"ipRegion":"SG","searchAllResponse":{"pageinfo":{"media_bangumi":{"numResults":1,"pages":1}},"result":[]}},"searchTypeResponse":{"searchTypeResponse":{"numResults":1,"numPages":1,"result":{"media_bangumi":{"data":[{"title":"葬送的芙莉莲","season_id":12345,"cover":"//i0.hdslb.com/test.jpg"}]}}}}};</script>`)
 	response, region, err := intlBangumiResponse(document, 1, 20)
 	if err != nil {
 		t.Fatalf("intlBangumiResponse returned error: %v", err)
@@ -85,10 +85,10 @@ func TestIntlBangumiResponseReadsObjectResult(t *testing.T) {
 		t.Fatalf("result count = %d, want 1", len(rows))
 	}
 	card := mapValue(rows[0])
-	if got := stringValue(card["title"]); got != "我的英雄学院：两位英雄" {
+	if got := stringValue(card["title"]); got != "葬送的芙莉莲" {
 		t.Fatalf("title = %q", got)
 	}
-	if got := stringValue(card["url"]); got != "https://www.bilibili.com/bangumi/play/ss274813" {
+	if got := stringValue(card["url"]); got != "https://www.bilibili.com/bangumi/play/ss12345" {
 		t.Fatalf("url = %q", got)
 	}
 }

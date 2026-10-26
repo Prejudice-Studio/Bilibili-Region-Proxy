@@ -1,4 +1,4 @@
-# 安全问题
+# 🔐 安全问题
 
 请勿在公开 Issue 或 Pull Request 中提交 Cookie、Authorization、access key、账号标识、设备标识或真实请求记录。
 

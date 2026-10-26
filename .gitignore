@@ -1,0 +1,31 @@
+# Local configuration may contain private injection links or deployment data.
+/config.json
+/Bilibili-Region-Proxy.json
+**/Bilibili-Region-Proxy.json
+
+# Captured traffic and local historical snapshots are not source files.
+*.har
+*.HAR
+/history/
+
+# Build artifacts.
+/output/
+/build/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Local tooling and editor state.
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime output and environment files.
+*.log
+.env
+.env.*
+!.env.example

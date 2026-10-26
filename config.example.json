@@ -1,0 +1,8 @@
+{
+  "force_intl_bangumi_search": false,
+  "injection": {
+    "enabled": false,
+    "position": "head",
+    "items": []
+  }
+}
